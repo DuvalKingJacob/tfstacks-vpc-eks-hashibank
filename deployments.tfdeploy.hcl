@@ -47,6 +47,7 @@ deployment_group "prod_group" {
 deployment "development" {
   # Assign this deployment to the 'dev_group'.
   deployment_group = deployment_group.dev_group
+  destroy=true
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = "arn:aws:iam::177099687113:role/tfstacks-role"
@@ -54,7 +55,7 @@ deployment "development" {
     vpc_name                  = "aeyuthira-dev"
     vpc_cidr                  = "10.0.0.0/16"
     kubernetes_version        = "1.30"
-    cluster_name              = "hideyaki-dev-final"
+    cluster_name              = "hideyaki-dev"
     tfc_kubernetes_audience   = "k8s.workload.identity"
     tfc_hostname              = "https://app.terraform.io"
     tfc_organization_name     = "vearadyn"
@@ -75,7 +76,7 @@ deployment "prod" {
     vpc_name                  = "hideyaki-prod"
     vpc_cidr                  = "10.20.0.0/16"
     kubernetes_version        = "1.30"
-    cluster_name              = "hideyaki-eksprod01-final"
+    cluster_name              = "hideyaki-eksprod01"
     tfc_kubernetes_audience   = "k8s.workload.identity"
     tfc_hostname              = "https://app.terraform.io"
     tfc_organization_name     = "vearadyn"
