@@ -51,14 +51,12 @@ component "k8s-rbac" {
   source = "./k8s-rbac"
 
   inputs = {
-    cluster_endpoint      = component.eks[each.value].cluster_endpoint
+    cluster_endpoint = component.eks[each.value].cluster_endpoint
     tfc_organization_name = var.tfc_organization_name
   }
 
   providers = {
-    # This is the crucial change. We're telling this component
-    # to use the more stable OIDC-based provider configuration.
-    kubernetes = provider.kubernetes.oidc_configurations[each.value]
+    kubernetes  = provider.kubernetes.configurations[each.value]
   }
 }
 

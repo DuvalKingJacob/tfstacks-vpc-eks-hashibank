@@ -1,9 +1,8 @@
 locals {
   tags = {
-    Blueprint  = var.cluster_name
+    Blueprint = var.cluster_name
   }
 }
-
 
 variable "role_arn" {
   description = "The ARN of the role to grant cluster admin access (used by tfstacks-role)"
@@ -59,25 +58,24 @@ module "eks" {
   enable_cluster_creator_admin_permissions = true
 
   access_entries = {
-      # One access entry with a policy associated
-      single = {
-        kubernetes_groups = []
-        principal_arn     = var.eks_clusteradmin_arn
-        username          = var.eks_clusteradmin_username
+    # One access entry with a policy associated
+    single = {
+      kubernetes_groups = []
+      principal_arn     = var.eks_clusteradmin_arn
+      username          = var.eks_clusteradmin_username
 
-        policy_associations = {
-          single = {
-            policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-            access_scope = {
-              type       = "cluster"
-
-            }
+      policy_associations = {
+        single = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
           }
         }
-      },
-         # This grants the HCP Terraform OIDC role full cluster admin access
+      }
+    },
+    # This grants the HCP Terraform OIDC role full cluster admin access
     tfc_oidc_role = {
-      principal_arn     = var.role_arn # This is the tfstacks-role your stack assumes
+      principal_arn  = var.role_arn # This is the tfstacks-role your stack assumes
       policy_associations = {
         cluster_admin_policy = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
@@ -89,24 +87,18 @@ module "eks" {
     }
   }
 
-
-
   tags = local.tags
-
-
 }
 
 data "aws_eks_cluster" "upstream" {
   depends_on = [module.eks]
-  name = var.cluster_name
-
+  name       = var.cluster_name
 }
 
 data "aws_eks_cluster_auth" "upstream_auth" {
   depends_on = [module.eks]
-  name = var.cluster_name
+  name       = var.cluster_name
 }
-
 
 resource "aws_eks_identity_provider_config" "oidc_config" {
   depends_on = [module.eks]
