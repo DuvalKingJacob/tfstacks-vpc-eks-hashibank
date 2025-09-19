@@ -91,5 +91,5 @@ deployment "prod" {
 # We are keeping it commented out for now.
 #
 publish_output "vpc_id" {
-   value = output.development.published_vpc_id
- }
+  value = deployment.development.published_vpc_id
+}
