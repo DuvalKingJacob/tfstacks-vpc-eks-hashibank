@@ -90,6 +90,6 @@ deployment "prod" {
 # feature may not be fully deployed in the GA environment yet.
 # We are keeping it commented out for now.
 #
-publish_output "vpc_id" {
+/*publish_output "vpc_id" {
    value = output.development.published_vpc_id
- }
+ }*/
