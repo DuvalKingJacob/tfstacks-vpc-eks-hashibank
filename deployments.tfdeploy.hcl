@@ -87,11 +87,7 @@ deployment "prod" {
 # ----------------------------------------------------
 # Step 5: Publish Outputs (Optional for Linked Stacks)
 # ----------------------------------------------------
-# Note: This block is currently erroring out because the Linked Stacks
-# feature may not be fully deployed in the GA environment yet.
-# We are keeping it commented out for now.
-#
-publish_output "vpc_id" {
-   value = deployment.development.published_vpc_id
- }
+# 'publish_output' blocks are not supported in the tfdeploy.hcl (deployment plan) file.
+# They are supported in the stack configuration file (typically stack.hcl or stack configuration block),
+# where you define which outputs from your deployment should be published for use by other stacks.
 
