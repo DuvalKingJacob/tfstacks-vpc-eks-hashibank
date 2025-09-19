@@ -5,12 +5,17 @@ locals {
 }
 
 
+variable "role_arn" {
+  description = "The ARN of the role to grant cluster admin access (used by tfstacks-role)"
+  type        = string
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.2.0"
 
   cluster_name                   = var.cluster_name
-  cluster_version                = var.kubernetes_version 
+  cluster_version                = var.kubernetes_version
   cluster_endpoint_public_access = true
 
   vpc_id     = var.vpc_id
@@ -41,7 +46,7 @@ module "eks" {
       ]
     }
   }
-  
+
   fargate_profile_defaults = {
     timeouts = {
       create = "30m"
@@ -49,7 +54,7 @@ module "eks" {
       delete = "30m"
     }
   }
- 
+
 
   enable_cluster_creator_admin_permissions = true
 
@@ -65,11 +70,25 @@ module "eks" {
             policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
             access_scope = {
               type       = "cluster"
+
             }
+          }
+        }
+      },
+         # This grants the HCP Terraform OIDC role full cluster admin access
+    tfc_oidc_role = {
+      principal_arn     = var.role_arn # This is the tfstacks-role your stack assumes
+      policy_associations = {
+        cluster_admin_policy = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
           }
         }
       }
     }
+  }
+
 
 
   tags = local.tags
