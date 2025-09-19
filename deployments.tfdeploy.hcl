@@ -51,7 +51,7 @@ deployment "development" {
     vpc_name                  = "aeyuthira-dev"
     vpc_cidr                  = "10.0.0.0/16"
     kubernetes_version        = "1.30"
-    cluster_name              = "vearadyn-dev"
+    cluster_name              = "hideyaki-dev"
     tfc_kubernetes_audience   = "k8s.workload.identity"
     tfc_hostname              = "https://app.terraform.io"
     tfc_organization_name     = "vearadyn"
@@ -69,10 +69,10 @@ deployment "prod" {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = "arn:aws:iam::177099687113:role/tfstacks-role"
     regions                   = ["us-east-1"]
-    vpc_name                  = "vearadyn-prod"
+    vpc_name                  = "hideyaki-prod"
     vpc_cidr                  = "10.20.0.0/16"
     kubernetes_version        = "1.30"
-    cluster_name              = "vearadyn-eksprod01"
+    cluster_name              = "hideyaki-eksprod01"
     tfc_kubernetes_audience   = "k8s.workload.identity"
     tfc_hostname              = "https://app.terraform.io"
     tfc_organization_name     = "vearadyn"
@@ -86,7 +86,10 @@ deployment "prod" {
 # ----------------------------------------------------
 # Step 5: Publish Outputs (Optional for Linked Stacks)
 # ----------------------------------------------------
-# 'publish_output' blocks are not supported in the tfdeploy.hcl (deployment plan) file.
-# They are supported in the stack configuration file (typically stack.hcl or stack configuration block),
-# where you define which outputs from your deployment should be published for use by other stacks.
-
+# Note: This block is currently erroring out because the Linked Stacks
+# feature may not be fully deployed in the GA environment yet.
+# We are keeping it commented out for now.
+#
+publish_output "vpc_id" {
+   value = output.development.published_vpc_id
+ }
