@@ -11,6 +11,9 @@ identity_token "aws" {
 identity_token "k8s" {
   audience = ["k8s.workload.identity"]
 }
+publish_output "vpc_id" {
+  value = deployment.development.published_vpc_id
+}
 
 # ----------------------------------------------------
 # Step 2: Define Auto-Approval Rules
@@ -81,15 +84,4 @@ deployment "prod" {
     k8s_identity_token        = identity_token.k8s.jwt
     namespace                 = "hashibank"
   }
-}
-
-# ----------------------------------------------------
-# Step 5: Publish Outputs (Optional for Linked Stacks)
-# ----------------------------------------------------
-# Note: This block is currently erroring out because the Linked Stacks
-# feature may not be fully deployed in the GA environment yet.
-# We are keeping it commented out for now.
-#
-publish_output "vpc_id" {
-  value = deployment.development.published_vpc_id
 }
