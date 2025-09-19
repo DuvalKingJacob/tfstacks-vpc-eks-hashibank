@@ -121,7 +121,7 @@ component "deploy-hashibank" {
 # Still commented out for now.
 output "published_vpc_id" {
   description = "The ID of the VPC from the development deployment."
-  type = list(string)
+  type        = string
   value       = component.vpc["us-east-1"].vpc_id
 }
 
