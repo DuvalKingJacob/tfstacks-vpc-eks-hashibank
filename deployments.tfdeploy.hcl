@@ -51,10 +51,10 @@ deployment "development" {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = "arn:aws:iam::177099687113:role/tfstacks-role"
     regions                   = ["us-east-1"]
-    vpc_name                  = "aeyuthira-dev"
+    vpc_name                  = "aeyuthira-dev1"
     vpc_cidr                  = "10.0.0.0/16"
     kubernetes_version        = "1.30"
-    cluster_name              = "hideyaki-dev-final"
+    cluster_name              = "hideyaki-dev1-final"
     tfc_kubernetes_audience   = "k8s.workload.identity"
     tfc_hostname              = "https://app.terraform.io"
     tfc_organization_name     = "vearadyn"
