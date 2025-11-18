@@ -9,8 +9,8 @@ output "cluster_name" {
 }
 
 output "cluster_endpoint" {
-  description = "eks cluster_endpoint"
-  value       = module.eks.cluster_endpoint
+  description = "EKS API endpoint"
+  value       = data.aws_eks_cluster.upstream.endpoint
 }
 
 output "cluster_version" {
@@ -24,11 +24,12 @@ output "oidc_provider_arn" {
 }
 
 output "cluster_certificate_authority_data" {
-  description = "eks output cluster_certificate_authority_data"
-  value       = module.eks.cluster_certificate_authority_data
+  description = "EKS cluster CA data"
+  value       = data.aws_eks_cluster.upstream.certificate_authority[0].data
 }
 
 output "eks_token" {
-  value = data.aws_eks_cluster_auth.upstream_auth.token
-  sensitive = true
+  description = "Token for authenticating to the EKS cluster (short‑lived)"
+  value       = data.aws_eks_cluster_auth.upstream_auth.token
+  sensitive   = true
 }

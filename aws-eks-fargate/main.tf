@@ -75,7 +75,11 @@ module "eks" {
     },
     # This grants the HCP Terraform OIDC role full cluster admin access
     tfc_oidc_role = {
-      principal_arn  = var.role_arn # This is the tfstacks-role your stack assumes
+      principal_arn  = var.role_arn 
+      
+      # <--- ADD THIS LINE BACK --->
+      kubernetes_groups = ["system:masters"] 
+
       policy_associations = {
         cluster_admin_policy = {
           policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"

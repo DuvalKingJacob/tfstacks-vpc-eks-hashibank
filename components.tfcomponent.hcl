@@ -51,17 +51,21 @@ component "k8s-rbac" {
   source = "./k8s-rbac"
 
   inputs = {
-    cluster_endpoint      = component.eks[each.value].cluster_endpoint
-    tfc_organization_name = var.tfc_organization_name
+    # pass the EKS outputs the k8s-rbac module expects
+    cluster_endpoint       = component.eks[each.value].cluster_endpoint
+    cluster_ca_certificate = component.eks[each.value].cluster_certificate_authority_data
+    eks_token              = component.eks[each.value].eks_token
+    tfc_organization_name  = var.tfc_organization_name
   }
 
+  # Use the provider configuration that authenticates with the EKS token (not the TFC OIDC provider)
   providers = {
-    # This is the crucial change. We're telling this component
-    # to use the more stable OIDC-based provider configuration.
-    kubernetes = provider.kubernetes.oidc_configurations[each.value]
+    kubernetes = provider.kubernetes.configurations[each.value]
   }
-}
 
+  # ensure EKS outputs (aws-eks-fargate) are created before we manage cluster-scoped RBAC
+  depends_on = [component.eks]
+}
 
 # K8s Addons - aws load balancer controller, coredns, vpc-cni, kube-proxy
 component "k8s-addons" {
