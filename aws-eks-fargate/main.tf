@@ -75,10 +75,10 @@ module "eks" {
     },
     # This grants the HCP Terraform OIDC role full cluster admin access
     tfc_oidc_role = {
-      principal_arn  = var.role_arn 
-      
-      # <--- ADD THIS LINE BACK --->
-      kubernetes_groups = ["system:masters"] 
+      principal_arn  = var.role_arn
+
+      # cannot use system:* groups here (API rejects them); leave empty and rely on the policy association
+      kubernetes_groups = []
 
       policy_associations = {
         cluster_admin_policy = {
