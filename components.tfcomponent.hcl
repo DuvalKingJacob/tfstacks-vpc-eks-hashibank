@@ -71,7 +71,7 @@ component "k8s-rbac" {
 component "k8s-addons" {
   for_each = var.regions
 
-  source = "./aws-eks-addon"
+source = "./aws-eks-addon"
 
   inputs = {
     cluster_name = component.eks[each.value].cluster_name

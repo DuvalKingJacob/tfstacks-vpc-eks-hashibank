@@ -1,20 +1,16 @@
 locals {
   tags = {
-    Blueprint = var.cluster_name
+    Blueprint  = var.cluster_name
   }
 }
 
-variable "role_arn" {
-  description = "The ARN of the role to grant cluster admin access (used by tfstacks-role)"
-  type        = string
-}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.2.0"
 
   cluster_name                   = var.cluster_name
-  cluster_version                = var.kubernetes_version
+  cluster_version                = var.kubernetes_version 
   cluster_endpoint_public_access = true
 
   vpc_id     = var.vpc_id
@@ -37,15 +33,25 @@ module "eks" {
         { namespace = "frontend*" },
         { namespace = "payments*" }
       ]
+      timeouts = {
+                  create = "30m"
+                  update = "30m"
+                  delete = "30m"
+                }
     }
     kube_system = {
       name = "kube-system"
       selectors = [
         { namespace = "kube-system" }
       ]
+      timeouts = {
+                  create = "30m"
+                  update = "30m"
+                  delete = "30m"
+                }
     }
   }
-
+  
   fargate_profile_defaults = {
     timeouts = {
       create = "30m"
@@ -53,56 +59,45 @@ module "eks" {
       delete = "30m"
     }
   }
+ 
 
-
-  enable_cluster_creator_admin_permissions = false
+  enable_cluster_creator_admin_permissions = true
 
   access_entries = {
-    # One access entry with a policy associated
-    single = {
-      kubernetes_groups = []
-      principal_arn     = var.eks_clusteradmin_arn
-      username          = var.eks_clusteradmin_username
+      # One access entry with a policy associated
+      single = {
+        kubernetes_groups = []
+        principal_arn     = var.eks_clusteradmin_arn
+        username          = var.eks_clusteradmin_username
 
-      policy_associations = {
-        single = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-          access_scope = {
-            type = "cluster"
-          }
-        }
-      }
-    },
-    # This grants the HCP Terraform OIDC role full cluster admin access
-    tfc_oidc_role = {
-      principal_arn  = var.role_arn
-
-      # cannot use system:* groups here (API rejects them); leave empty and rely on the policy association
-      kubernetes_groups = []
-
-      policy_associations = {
-        cluster_admin_policy = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-          access_scope = {
-            type = "cluster"
+        policy_associations = {
+          single = {
+            policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+            access_scope = {
+              type       = "cluster"
+            }
           }
         }
       }
     }
-  }
+
 
   tags = local.tags
+
+
 }
 
 data "aws_eks_cluster" "upstream" {
   depends_on = [module.eks]
-  name       = var.cluster_name
+  name = var.cluster_name
+
 }
 
 data "aws_eks_cluster_auth" "upstream_auth" {
   depends_on = [module.eks]
-  name       = var.cluster_name
+  name = var.cluster_name
 }
+
 
 resource "aws_eks_identity_provider_config" "oidc_config" {
   depends_on = [module.eks]
@@ -116,4 +111,3 @@ resource "aws_eks_identity_provider_config" "oidc_config" {
     groups_claim                  = "terraform_organization_name"
   }
 }
-
