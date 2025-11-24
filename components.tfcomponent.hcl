@@ -109,6 +109,9 @@ component "k8s-namespace" {
   providers = {
     kubernetes  = provider.kubernetes.oidc_configurations[each.value]
   }
+
+  # wait until the RBAC clusterrolebinding for the TFC OIDC identity exists
+  depends_on = [component.k8s-rbac]
 }
 
 # Deploy Hashibank
@@ -125,6 +128,9 @@ component "deploy-hashibank" {
     kubernetes  = provider.kubernetes.oidc_configurations[each.value]
     time = provider.time.this
   }
+
+  # ensure namespace and RBAC are present before deploying resources
+  depends_on = [component.k8s-rbac, component.k8s-namespace]
 }
 
 # This is the new, critical block. It formally exposes the VPC ID
