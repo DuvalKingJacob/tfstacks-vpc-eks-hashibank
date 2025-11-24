@@ -71,25 +71,28 @@ component "k8s-rbac" {
 component "k8s-addons" {
   for_each = var.regions
 
-source = "./aws-eks-addon"
+  source = "./aws-eks-addon"
 
   inputs = {
-    cluster_name = component.eks[each.value].cluster_name
-    vpc_id = component.vpc[each.value].vpc_id
-    private_subnets = component.vpc[each.value].private_subnets
-    cluster_endpoint = component.eks[each.value].cluster_endpoint
-    cluster_version = component.eks[each.value].cluster_version
-    oidc_provider_arn = component.eks[each.value].oidc_provider_arn
-    cluster_certificate_authority_data = component.eks[each.value].cluster_certificate_authority_data
-    oidc_binding_id = component.k8s-rbac[each.value].oidc_binding_id
+    cluster_name                         = component.eks[each.value].cluster_name
+    vpc_id                               = component.vpc[each.value].vpc_id
+    private_subnets                       = component.vpc[each.value].private_subnets
+    cluster_endpoint                     = component.eks[each.value].cluster_endpoint
+    cluster_version                      = component.eks[each.value].cluster_version
+    cluster_certificate_authority_data   = component.eks[each.value].cluster_certificate_authority_data
+    oidc_provider_arn                    = component.eks[each.value].oidc_provider_arn
+    oidc_binding_id                      = component.k8s-rbac[each.value].oidc_binding_id
   }
 
   providers = {
-    kubernetes  = provider.kubernetes.oidc_configurations[each.value]
-    helm  = provider.helm.oidc_configurations[each.value]
-    aws    = provider.aws.configurations[each.value]
-    time = provider.time.this
+    kubernetes  = provider.kubernetes.configurations[each.value]
+    helm        = provider.helm.configurations[each.value]
+    aws         = provider.aws.configurations[each.value]
+    time        = provider.time.this
   }
+
+  # ensure the RBAC binding is created first so CRD/helm installs run with cluster-admin privileges
+  depends_on = [component.k8s-rbac]
 }
 
 # Namespace
