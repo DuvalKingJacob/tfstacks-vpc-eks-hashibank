@@ -47,6 +47,7 @@ deployment_group "prod_group" {
 deployment "development" {
   # Assign this deployment to the 'dev_group'.
   deployment_group = deployment_group.dev_group
+  destroy=true
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = "arn:aws:iam::177099687113:role/tfstacks-role"
@@ -68,6 +69,7 @@ deployment "development" {
 deployment "prod" {
   # Assign this deployment to the 'prod_group'.
   deployment_group = deployment_group.prod_group
+  destroy=true
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = "arn:aws:iam::177099687113:role/tfstacks-role"
