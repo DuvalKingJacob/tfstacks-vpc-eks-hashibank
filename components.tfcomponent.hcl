@@ -103,7 +103,7 @@ component "k8s-namespace" {
   }
 
   providers = {
-    kubernetes  = provider.kubernetes.oidc_configurations[each.value]
+    kubernetes  = provider.kubernetes.configurations[each.value]
   }
 
   # wait until the RBAC clusterrolebinding for the TFC OIDC identity exists
@@ -121,7 +121,7 @@ component "deploy-hashibank" {
   }
 
   providers = {
-    kubernetes  = provider.kubernetes.oidc_configurations[each.value]
+    kubernetes  = provider.kubernetes.configurations[each.value]
     time = provider.time.this
   }
 
