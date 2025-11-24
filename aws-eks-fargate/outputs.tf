@@ -29,7 +29,7 @@ output "cluster_certificate_authority_data" {
 }
 
 output "eks_token" {
-  description = "Token for authenticating to the EKS cluster (short‑lived)"
+  description = "EKS token (short‑lived) used to authenticate as cluster creator"
   value       = data.aws_eks_cluster_auth.upstream_auth.token
   sensitive   = true
 }

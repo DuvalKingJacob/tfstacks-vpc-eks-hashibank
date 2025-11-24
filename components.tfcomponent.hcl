@@ -44,26 +44,22 @@ component "eks" {
   }
 }
 
-# Update K8s role-binding
+# k8s RBAC (create clusterrolebinding using EKS token)
 component "k8s-rbac" {
   for_each = var.regions
-
-  source = "./k8s-rbac"
+  source   = "./k8s-rbac"
 
   inputs = {
-    # pass the EKS outputs the k8s-rbac module expects
-    cluster_endpoint       = component.eks[each.value].cluster_endpoint
-    cluster_ca_certificate = component.eks[each.value].cluster_certificate_authority_data
-    eks_token              = component.eks[each.value].eks_token
-    tfc_organization_name  = var.tfc_organization_name
+    cluster_endpoint      = component.eks[each.value].cluster_endpoint
+    cluster_certificate_authority_data = component.eks[each.value].cluster_certificate_authority_data
+    eks_token             = component.eks[each.value].eks_token
+    tfc_organization_name = var.tfc_organization_name
   }
 
-  # Use the provider configuration that authenticates with the EKS token (not the TFC OIDC provider)
   providers = {
     kubernetes = provider.kubernetes.configurations[each.value]
   }
 
-  # ensure EKS outputs (aws-eks-fargate) are created before we manage cluster-scoped RBAC
   depends_on = [component.eks]
 }
 
