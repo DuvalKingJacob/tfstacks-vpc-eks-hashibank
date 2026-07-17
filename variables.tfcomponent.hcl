@@ -1,21 +1,24 @@
 variable "regions" {
-  type = set(string)
+  description = "AWS regions where this deployment creates infrastructure."
+  type        = set(string)
 }
 
 variable "aws_identity_token" {
-  type = string
-  ephemeral = true
-  sensitive = true
+  description = "Ephemeral OIDC token used by the AWS provider."
+  type        = string
+  ephemeral   = true
+  sensitive   = true
 }
 
 variable "k8s_identity_token" {
-  type = string
-  ephemeral = true
-  sensitive = true
+  description = "Ephemeral OIDC token used by the Kubernetes provider."
+  type        = string
+  ephemeral   = true
+  sensitive   = true
 }
 
 variable "workload_idp_name" {
-  type = string
+  type    = string
   default = "tfstacks-workload-identity-provider"
 }
 
@@ -33,7 +36,7 @@ variable "role_arn" {
 }
 
 variable "vpc_name" {
-  type = string 
+  type = string
 }
 
 variable "vpc_cidr" {
@@ -41,17 +44,22 @@ variable "vpc_cidr" {
 }
 
 variable "kubernetes_version" {
-  type = string
-  default = "1.29"
+  type    = string
+  default = "1.34"
+
+  validation {
+    condition     = contains(["1.34", "1.35"], var.kubernetes_version)
+    error_message = "HashiBank platform governance permits EKS versions 1.34 or 1.35."
+  }
 }
 
 variable "cluster_name" {
-  type = string
+  type    = string
   default = "eks-cluster"
 }
 
 variable "namespace" {
-  type = string
+  type    = string
   default = "hashibank"
 }
 

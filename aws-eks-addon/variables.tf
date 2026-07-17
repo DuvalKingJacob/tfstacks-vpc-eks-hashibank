@@ -1,29 +1,29 @@
 
 variable "vpc_id" {
-  type    = string
+  type = string
 }
 
 variable "cluster_name" {
-  type    = string
+  type = string
 }
 
 variable "cluster_endpoint" {
-  type    = string
+  type = string
 }
 
 variable "cluster_version" {
-  type    = string
+  type = string
 }
 
 variable "oidc_provider_arn" {
-  type    = string
+  type = string
 }
 
 variable "cluster_certificate_authority_data" {
-  type    = string
+  type = string
 }
 
 variable "oidc_binding_id" {
-  type    = string
+  type        = string
   description = "used for component dependency"
 }

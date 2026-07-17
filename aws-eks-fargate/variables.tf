@@ -13,11 +13,11 @@ variable "private_subnets" {
 }
 
 variable "vpc_id" {
-  type    = string
+  type = string
 }
 
 variable "kubernetes_version" {
-  type    = string
+  type = string
 }
 
 variable "tfc_hostname" {
@@ -26,13 +26,13 @@ variable "tfc_hostname" {
 }
 
 variable "tfc_kubernetes_audience" {
-  type    = string
+  type = string
 }
 
 variable "eks_clusteradmin_arn" {
-  type    = string
+  type = string
 }
 
 variable "eks_clusteradmin_username" {
-  type    = string
+  type = string
 }

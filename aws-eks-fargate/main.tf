@@ -1,6 +1,6 @@
 locals {
   tags = {
-    Blueprint  = var.cluster_name
+    Blueprint = var.cluster_name
   }
 }
 
@@ -10,7 +10,7 @@ module "eks" {
   version = "20.2.0"
 
   cluster_name                   = var.cluster_name
-  cluster_version                = var.kubernetes_version 
+  cluster_version                = var.kubernetes_version
   cluster_endpoint_public_access = true
 
   vpc_id     = var.vpc_id
@@ -34,10 +34,10 @@ module "eks" {
         { namespace = "payments*" }
       ]
       timeouts = {
-                  create = "30m"
-                  update = "30m"
-                  delete = "30m"
-                }
+        create = "30m"
+        update = "30m"
+        delete = "30m"
+      }
     }
     kube_system = {
       name = "kube-system"
@@ -45,13 +45,13 @@ module "eks" {
         { namespace = "kube-system" }
       ]
       timeouts = {
-                  create = "30m"
-                  update = "30m"
-                  delete = "30m"
-                }
+        create = "30m"
+        update = "30m"
+        delete = "30m"
+      }
     }
   }
-  
+
   fargate_profile_defaults = {
     timeouts = {
       create = "30m"
@@ -59,27 +59,27 @@ module "eks" {
       delete = "30m"
     }
   }
- 
+
 
   enable_cluster_creator_admin_permissions = true
 
   access_entries = {
-      # One access entry with a policy associated
-      single = {
-        kubernetes_groups = []
-        principal_arn     = var.eks_clusteradmin_arn
-        username          = var.eks_clusteradmin_username
+    # One access entry with a policy associated
+    single = {
+      kubernetes_groups = []
+      principal_arn     = var.eks_clusteradmin_arn
+      username          = var.eks_clusteradmin_username
 
-        policy_associations = {
-          single = {
-            policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-            access_scope = {
-              type       = "cluster"
-            }
+      policy_associations = {
+        single = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
           }
         }
       }
     }
+  }
 
 
   tags = local.tags
@@ -89,18 +89,18 @@ module "eks" {
 
 data "aws_eks_cluster" "upstream" {
   depends_on = [module.eks]
-  name = var.cluster_name
+  name       = var.cluster_name
 
 }
 
 data "aws_eks_cluster_auth" "upstream_auth" {
   depends_on = [module.eks]
-  name = var.cluster_name
+  name       = var.cluster_name
 }
 
 
 resource "aws_eks_identity_provider_config" "oidc_config" {
-  depends_on = [module.eks]
+  depends_on   = [module.eks]
   cluster_name = var.cluster_name
 
   oidc {

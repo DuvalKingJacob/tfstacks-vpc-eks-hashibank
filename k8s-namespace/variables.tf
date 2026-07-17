@@ -1,9 +1,9 @@
 variable "namespace" {
-  type    = string
+  type = string
 }
 
 variable "labels" {
-  type    = any
+  type = any
   default = {
     mylabel = "example-label"
   }

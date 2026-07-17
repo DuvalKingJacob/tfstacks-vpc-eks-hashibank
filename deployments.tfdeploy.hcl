@@ -11,6 +11,13 @@ identity_token "aws" {
 identity_token "k8s" {
   audience = ["k8s.workload.identity"]
 }
+
+# Environment-specific identifiers live in HCP Terraform rather than VCS.
+store "varset" "runtime" {
+  name     = "hashibank-stack-runtime"
+  category = "terraform"
+}
+
 publish_output "vpc_id" {
   value = deployment.development.published_vpc_id
 }
@@ -21,8 +28,8 @@ publish_output "vpc_id" {
 deployment_auto_approve "safe_dev_plans" {
   check {
     # This rule only passes if no resources are being deleted.
-    condition     = context.plan.changes.remove == 0
-    reason        = "Plan has ${context.plan.changes.remove} resources to be removed. Manual approval required."
+    condition = context.plan.changes.remove == 0
+    reason    = "Plan has ${context.plan.changes.remove} resources to be removed. Manual approval required."
   }
 }
 
@@ -47,20 +54,20 @@ deployment_group "prod_group" {
 deployment "development" {
   # Assign this deployment to the 'dev_group'.
   deployment_group = deployment_group.dev_group
-  destroy=true
+
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
-    role_arn                  = "arn:aws:iam::177099687113:role/tfstacks-role"
+    role_arn                  = store.varset.runtime.stable.dev_role_arn
     regions                   = ["us-east-1"]
-    vpc_name                  = "aeyuthira-dev1"
+    vpc_name                  = "hashibank-dev"
     vpc_cidr                  = "10.0.0.0/16"
-    kubernetes_version        = "1.30"
-    cluster_name              = "hideyaki-dev1-final"
+    kubernetes_version        = "1.34"
+    cluster_name              = "hashibank-dev"
     tfc_kubernetes_audience   = "k8s.workload.identity"
     tfc_hostname              = "https://app.terraform.io"
-    tfc_organization_name     = "vearadyn"
-    eks_clusteradmin_arn      = "arn:aws:iam::177099687113:role/aws_jacob.plicque_test-developer"
-    eks_clusteradmin_username = "aws_jacob.plicque_test-developer"
+    tfc_organization_name     = store.varset.runtime.stable.tfc_organization_name
+    eks_clusteradmin_arn      = store.varset.runtime.stable.dev_cluster_admin_arn
+    eks_clusteradmin_username = store.varset.runtime.stable.dev_cluster_admin_username
     k8s_identity_token        = identity_token.k8s.jwt
     namespace                 = "hashibank"
   }
@@ -71,17 +78,17 @@ deployment "prod" {
   deployment_group = deployment_group.prod_group
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
-    role_arn                  = "arn:aws:iam::177099687113:role/tfstacks-role"
+    role_arn                  = store.varset.runtime.stable.prod_role_arn
     regions                   = ["us-east-1"]
-    vpc_name                  = "aeyuthirai-prod"
+    vpc_name                  = "hashibank-prod"
     vpc_cidr                  = "10.20.0.0/16"
-    kubernetes_version        = "1.30"
-    cluster_name              = "hideyaki-eksprod01-final"
+    kubernetes_version        = "1.34"
+    cluster_name              = "hashibank-prod"
     tfc_kubernetes_audience   = "k8s.workload.identity"
     tfc_hostname              = "https://app.terraform.io"
-    tfc_organization_name     = "vearadyn"
-    eks_clusteradmin_arn      = "arn:aws:iam::855831148133:role/aws_jacob.plicque_test-developer"
-    eks_clusteradmin_username = "aws_jacob.plicque_test-developer"
+    tfc_organization_name     = store.varset.runtime.stable.tfc_organization_name
+    eks_clusteradmin_arn      = store.varset.runtime.stable.prod_cluster_admin_arn
+    eks_clusteradmin_username = store.varset.runtime.stable.prod_cluster_admin_username
     k8s_identity_token        = identity_token.k8s.jwt
     namespace                 = "hashibank"
   }
