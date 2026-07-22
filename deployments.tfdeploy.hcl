@@ -76,7 +76,6 @@ deployment "development" {
 deployment "prod" {
   # Assign this deployment to the 'prod_group'.
   deployment_group = deployment_group.prod_group
-  destroy          = true
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = store.varset.runtime.stable.prod_role_arn
@@ -92,6 +91,5 @@ deployment "prod" {
     eks_clusteradmin_username = store.varset.runtime.stable.prod_cluster_admin_username
     k8s_identity_token        = identity_token.k8s.jwt
     namespace                 = "hashibank"
-    enable_irsa               = false
   }
 }
