@@ -92,5 +92,6 @@ deployment "prod" {
     eks_clusteradmin_username = store.varset.runtime.stable.prod_cluster_admin_username
     k8s_identity_token        = identity_token.k8s.jwt
     namespace                 = "hashibank"
+    enable_irsa               = false
   }
 }

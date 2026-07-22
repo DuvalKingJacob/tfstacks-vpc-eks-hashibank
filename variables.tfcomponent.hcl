@@ -82,3 +82,9 @@ variable "eks_clusteradmin_username" {
   type = string
 }
 
+
+variable "enable_irsa" {
+  description = "Enable OIDC provider creation in the EKS module."
+  type        = bool
+  default     = true
+}
