@@ -58,7 +58,7 @@ deployment "development" {
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = store.varset.runtime.stable.dev_role_arn
-    regions                   = ["us-east-1"]
+    regions                   = ["us-east-2"]
     vpc_name                  = "hashibank-dev"
     vpc_cidr                  = "10.0.0.0/16"
     kubernetes_version        = "1.34"
@@ -79,7 +79,7 @@ deployment "prod" {
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = store.varset.runtime.stable.prod_role_arn
-    regions                   = ["us-east-1"]
+    regions                   = ["us-east-2"]
     vpc_name                  = "hashibank-prod"
     vpc_cidr                  = "10.20.0.0/16"
     kubernetes_version        = "1.34"
