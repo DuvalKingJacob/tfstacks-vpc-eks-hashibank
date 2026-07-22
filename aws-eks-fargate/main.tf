@@ -112,14 +112,3 @@ resource "aws_eks_identity_provider_config" "oidc_config" {
   }
 }
 
-# Drop stale OIDC provider from state — was created in old account (177099687113).
-# The resource no longer exists; this block tells Terraform to forget it without
-# attempting a destroy API call.
-removed {
-  from = module.eks.aws_iam_openid_connect_provider.oidc_provider
-
-  lifecycle {
-    destroy = false
-  }
-}
-
