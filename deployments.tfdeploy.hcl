@@ -54,7 +54,7 @@ deployment_group "prod_group" {
 deployment "development" {
   # Assign this deployment to the 'dev_group'.
   deployment_group = deployment_group.dev_group
-
+  destroy = true
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = store.varset.runtime.stable.dev_role_arn
