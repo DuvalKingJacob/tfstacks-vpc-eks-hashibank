@@ -1,0 +1,33 @@
+# EKS Kubernetes version governance for the hashibank Stack.
+#
+# Governance story:
+#   Platform teams approve EKS versions based on stability, support window,
+#   and internal testing. This policy enforces that approval at the org level —
+#   no deployment can use an unapproved version regardless of who authors the change.
+#
+# Demo flow:
+#   Set kubernetes_version = "1.33" in a deployment input → policy blocks with clear message
+#   Set kubernetes_version = "1.34" or "1.35" → policy passes
+#   Attempting to skip to an untested future version → policy blocks
+
+policy "eks-approved-versions" {
+  enforcement_level = "soft-mandatory"
+}
+
+locals {
+  approved_versions = ["1.34", "1.35"]
+
+  eks_cluster_changes = [
+    for change in core.plan.resource_changes :
+    change if change.type == "aws_eks_cluster" && change.change.after != null
+  ]
+}
+
+enforce {
+  for_each = local.eks_cluster_changes
+  each.key = "eks_version_check"
+
+  condition = contains(local.approved_versions, each.value.change.after.version)
+
+  error_message = "EKS cluster '${each.value.address}' is set to Kubernetes version '${each.value.change.after.version}'. Only approved versions are permitted: ${join(", ", local.approved_versions)}. To request a new version, open a platform team review."
+}
