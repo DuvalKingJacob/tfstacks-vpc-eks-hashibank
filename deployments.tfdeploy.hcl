@@ -18,10 +18,6 @@ store "varset" "runtime" {
   category = "terraform"
 }
 
-publish_output "vpc_id" {
-  value = deployment.development.published_vpc_id
-}
-
 # ----------------------------------------------------
 # Step 2: Define Auto-Approval Rules
 # ----------------------------------------------------
@@ -54,7 +50,6 @@ deployment_group "prod_group" {
 deployment "development" {
   # Assign this deployment to the 'dev_group'.
   deployment_group = deployment_group.dev_group
-  destroy = true
   inputs = {
     aws_identity_token        = identity_token.aws.jwt
     role_arn                  = store.varset.runtime.stable.dev_role_arn
