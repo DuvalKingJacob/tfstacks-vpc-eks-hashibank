@@ -113,12 +113,3 @@ resource "aws_eks_identity_provider_config" "oidc_config" {
 }
 
 
-# Temporary: drop stale OIDC provider left in state from old AWS account (177099687113).
-# Remove this block once prod state is clean.
-removed {
-  from = module.eks.aws_iam_openid_connect_provider.oidc_provider
-
-  lifecycle {
-    destroy = false
-  }
-}
