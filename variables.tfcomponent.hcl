@@ -82,4 +82,9 @@ variable "eks_clusteradmin_username" {
   type = string
 }
 
+variable "enable_irsa" {
+  description = "Whether to create the IAM OIDC provider for IRSA. Set to false when stale state from a previous account exists."
+  type        = bool
+  default     = true
+}
 

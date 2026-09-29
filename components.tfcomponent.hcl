@@ -18,6 +18,7 @@ component "vpc" {
 # AWS EKS
 component "eks" {
   for_each = var.regions
+  
   source   = "./aws-eks-fargate"
 
   inputs = {
@@ -30,6 +31,7 @@ component "eks" {
     eks_clusteradmin_arn      = var.eks_clusteradmin_arn
     eks_clusteradmin_username = var.eks_clusteradmin_username
     role_arn                  = var.role_arn
+    enable_irsa               = var.enable_irsa
   }
 
   providers = {
